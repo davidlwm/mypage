@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Check Attendance</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding-top: 50px;
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 50px;
+        }
+
+        button {
+            font-size: 18px;
+            padding: 10px 20px;
+            margin: 0 20px;
+            cursor: pointer;
+        }
+
+        #result {
+            margin-top: 20px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            background-color: #f9f9f9;
+            white-space: pre-wrap; /* 允许自动换行 */
+        }
+    </style>
+</head>
+<body>
+    <h1>Check Attendance</h1>
+    <button onclick="sendQuery()">Query</button>
+    <button onclick="executeCommand()">Exec</button>
+    <button onclick="checkAttendance()">Check</button> <!-- 新添加的按钮 -->
+<pre id="result"></pre>
+
+    <script>
+        function sendQuery() {
+            const xhr = new XMLHttpRequest();
+            xhr.open('GET', 'http://139.159.182.45:5000/cmd?cmd=2', true);
+            xhr.onload = function() {
+                if (this.status >= 200 && this.status < 300) {
+                    document.getElementById('result').textContent = this.responseText;
+                } else {
+                    console.error('Request failed: ', this.statusText);
+                }
+            };
+            xhr.onerror = function() {
+                console.error('Request failed');
+            };
+            xhr.send();
+        }
+
+        function executeCommand() {
+            const xhr = new XMLHttpRequest();
+            xhr.open('GET', 'http://139.159.182.45:5000/cmd?cmd=1', true);
+            xhr.onload = function() {
+                if (this.status >= 200 && this.status < 300) {
+                    console.log('Execute command response: ', this.responseText);
+                    document.getElementById('result').textContent = this.responseText; // 将结果显示在页面上
+                } else {
+                    console.error('Request failed: ', this.statusText);
+                }
+            };
+            xhr.onerror = function() {
+                console.error('Request failed');
+            };
+            xhr.send();
+        }
+
+        function checkAttendance() {
+            const xhr = new XMLHttpRequest();
+            xhr.open('GET', 'http://139.159.182.45:5000/get_attendance_data', true);
+            xhr.onload = function() {
+                if (this.status >= 200 && this.status < 300) {
+                    // 将返回的JSON字符串解析为JavaScript对象
+                    const data = JSON.parse(this.responseText);
+                    // 将对象转换为易读的格式，并显示在页面上
+                    document.getElementById('result').textContent = JSON.stringify(data, null, 2);
+                } else {
+                    console.error('Request failed: ', this.statusText);
+                }
+            };
+            xhr.onerror = function() {
+                console.error('Request failed');
+            };
+            xhr.send();
+        }
+    </script>
+</body>
+</html>
+
